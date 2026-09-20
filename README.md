@@ -1,83 +1,135 @@
 # ResearchMind
 
-ResearchMind is a Streamlit research assistant that searches the web, extracts useful content from candidate sources, writes a structured research report, and reviews it with a critic step.
+<p align="center">
+  <strong>A multi-agent AI research assistant built with Streamlit.</strong><br>
+  Search the web, read the best sources, write a structured report, and critique the result — in one workflow.
+</p>
+
+<p align="center">
+  <a href="https://researchmind-ajkrhivt66pw3ijoko7g36.streamlit.app/"><strong>🚀 Live demo</strong></a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/nakul143naps/researchmind/issues">Report an issue</a>
+  &nbsp;·&nbsp;
+  <a href="https://share.streamlit.io/">Deploy your own</a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Built%20with-Streamlit-ff4b4b?logo=streamlit&logoColor=white" alt="Built with Streamlit">
+  <img src="https://img.shields.io/badge/LLM-OpenRouter-6f42c1" alt="OpenRouter">
+  <img src="https://img.shields.io/badge/Search-Tavily-111827" alt="Tavily">
+</p>
+
+## What it does
+
+ResearchMind turns a topic into a polished research report through four specialized stages:
+
+```text
+Topic
+  ↓
+Search agent     → finds recent, relevant sources with Tavily
+  ↓
+Reader agent     → extracts deeper content from a selected source
+  ↓
+Writer chain     → creates a structured report with sources
+  ↓
+Critic chain     → scores the report and suggests improvements
+```
+
+The Streamlit interface displays the workflow, raw research output, final report, critic feedback, and a Markdown download.
 
 ## Features
 
-- Web search using Tavily
-- Source scraping and content extraction
-- OpenRouter-powered research writing
-- AI-based criticism and improvement feedback
-- Streamlit UI for interactive research workflow
+- 🌐 Recent web research with Tavily
+- 📄 Lightweight source extraction with BeautifulSoup
+- ✍️ Structured report generation through an OpenAI-compatible OpenRouter model
+- 🧐 Dedicated critic pass with score, strengths, and improvement areas
+- 🎨 Focused dark UI with pipeline status cards
+- ⬇️ Downloadable Markdown reports
+- 🔐 Secrets loaded from local `.env` or Streamlit Cloud secrets
+- 🧩 Terminal pipeline available through `pipeline.py`
 
-## Tech Stack
+## Live demo
 
-- Python 3.10+
-- Streamlit
-- LangChain
-- LangChain OpenAI-compatible models
-- Tavily API
-- BeautifulSoup
+Try the deployed app here:
 
-## Project Structure
+### [Open ResearchMind →](https://researchmind-ajkrhivt66pw3ijoko7g36.streamlit.app/)
 
-- app.py — Streamlit UI
-- agents.py — model setup and research workflow agents/chains
-- pipeline.py — terminal pipeline runner
-- tools.py — Tavily search and URL scraping tools
-- requirements.txt — Python dependencies
-- .env.example — environment variable template
+> The live demo requires configured API credentials to run a research request.
 
-## Setup
+## Tech stack
 
-1. Create a virtual environment
+- **UI:** Streamlit
+- **Agents and orchestration:** LangChain and LangGraph
+- **Language model:** OpenRouter through `langchain-openai`
+- **Web search:** Tavily
+- **Content extraction:** Requests, BeautifulSoup, and lxml
+- **Runtime:** Python 3.10+
 
-   python -m venv .venv
+## Project structure
 
-2. Activate the environment
+| File | Purpose |
+| --- | --- |
+| `app.py` | Streamlit user interface and interactive workflow |
+| `agents.py` | Model configuration, agents, writer chain, and critic chain |
+| `tools.py` | Tavily search and URL scraping tools |
+| `pipeline.py` | Command-line research pipeline |
+| `requirements.txt` | Python dependencies |
+| `.env.example` | Safe environment-variable template |
 
-   Windows PowerShell:
-   .\.venv\Scripts\Activate.ps1
+## Run locally
 
-3. Install dependencies
+### 1. Clone the repository
 
-   pip install -r requirements.txt
+```bash
+git clone https://github.com/nakul143naps/researchmind.git
+cd researchmind
+```
 
-4. Create a local environment file
+### 2. Create and activate a virtual environment
 
-   Copy .env.example to .env and fill in your real API keys.
+Windows PowerShell:
 
-   Example:
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
 
-   OPENROUTER_API_KEY=your_openrouter_api_key_here
-   OPENROUTER_MODEL=meta-llama/llama-3.3-70b-instruct
-   TAVILY_API_KEY=your_tavily_api_key_here
+macOS/Linux:
 
-5. Run the app
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
 
-   streamlit run app.py
+### 3. Install dependencies
 
-## Notes
+```bash
+pip install -r requirements.txt
+```
 
-- Never commit your .env file to Git.
-- The repository intentionally ignores .env and other .env.* files while keeping .env.example as a placeholder template.
-- The project currently expects a valid OpenRouter API key and a Tavily API key to run successfully.
+### 4. Configure API keys
 
-## Example Local Run
+Copy `.env.example` to `.env` and add your credentials:
 
-   .\.venv\Scripts\Activate.ps1
-   streamlit run app.py
+```env
+OPENROUTER_API_KEY=your_openrouter_api_key
+OPENROUTER_MODEL=meta-llama/llama-3.3-70b-instruct
+TAVILY_API_KEY=your_tavily_api_key
+```
 
-Then open the local URL shown by Streamlit, usually:
+### 5. Start the app
 
-   http://localhost:8501
+```bash
+streamlit run app.py
+```
+
+Open [http://localhost:8501](http://localhost:8501).
 
 ## Deploy on Streamlit Community Cloud
 
-1. Push this repository to GitHub. Do not commit `.env`; it is ignored by Git.
-2. Open [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub.
-3. Select the `researchmind` repository, the `clean-main` branch, and `app.py` as the main file.
-4. In **Advanced settings → Secrets**, add:
+1. Open [share.streamlit.io](https://share.streamlit.io/) and sign in with GitHub.
+2. Select this repository, branch `clean-main`, and main file `app.py`.
+3. In **Advanced settings → Secrets**, add:
 
    ```toml
    OPENROUTER_API_KEY = "your_openrouter_api_key"
@@ -85,5 +137,23 @@ Then open the local URL shown by Streamlit, usually:
    TAVILY_API_KEY = "your_tavily_api_key"
    ```
 
-5. Click **Deploy**. Streamlit Cloud installs the packages from `requirements.txt`
-   and provides the public app URL when startup completes.
+4. Deploy and open the generated public URL.
+
+## Security notes
+
+- Never commit `.env` or real API keys.
+- Use Streamlit Cloud Secrets for deployed credentials.
+- `.env` and other environment files are ignored by Git; `.env.example` contains placeholders only.
+
+## Contributing
+
+Issues and pull requests are welcome. If you find a bug or have an improvement, open an issue with:
+
+- the topic or workflow step involved,
+- the expected behavior,
+- the actual behavior,
+- and any relevant error message.
+
+## License
+
+No license has been selected for this repository yet. Add a license before accepting external contributions or redistributing the project.
