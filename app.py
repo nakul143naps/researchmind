@@ -342,7 +342,7 @@ with col_input:
         key="topic_input",
         label_visibility="visible",
     )
-    run_btn = st.button("⚡  Run Research Pipeline", use_container_width=True)
+    run_btn = st.button("⚡  Run Research Pipeline", width="stretch")
     st.markdown('</div>', unsafe_allow_html=True)
 
     # Example chips
@@ -506,4 +506,3 @@ st.markdown("""
     ResearchMind · Powered by LangChain multi-agent pipeline · Built with Streamlit
 </div>
 """, unsafe_allow_html=True)
-
