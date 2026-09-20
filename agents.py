@@ -5,6 +5,8 @@ from langchain_core.output_parsers import StrOutputParser
 from tools import web_search, scrape_url 
 from dotenv import load_dotenv
 import os
+import sys
+from pathlib import Path
 
 load_dotenv()
 
@@ -95,3 +97,11 @@ One line verdict:
 ])
 
 critic_chain = critic_prompt | llm | StrOutputParser()
+
+# Keep older Streamlit Cloud configurations usable if they still point at this
+# module instead of the actual UI entry point.
+main_file = getattr(sys.modules.get("__main__"), "__file__", "")
+if main_file and Path(main_file).resolve() == Path(__file__).resolve():
+    import runpy
+
+    runpy.run_path(str(Path(__file__).with_name("app.py")), run_name="__main__")
