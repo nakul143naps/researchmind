@@ -1,5 +1,5 @@
 from langchain.agents import create_agent
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from tools import web_search, scrape_url 
@@ -8,13 +8,29 @@ import os
 
 load_dotenv()
 
-# Model setup using Gemini
-model_name = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
-gemini_api_key = os.getenv("GEMINI_API_KEY")
-llm = ChatGoogleGenerativeAI(
-    model=model_name,
+def get_setting(name: str, default: str | None = None) -> str | None:
+    value = os.getenv(name)
+    if value:
+        return value
+    try:
+        import streamlit as st
+        return st.secrets.get(name, default)
+    except Exception:
+        return default
+
+# Model setup using OpenRouter
+openrouter_api_key = get_setting("OPENROUTER_API_KEY") or get_setting("OPENAI_API_KEY")
+if not openrouter_api_key:
+    raise ValueError(
+        "Missing OpenRouter credentials. Set OPENROUTER_API_KEY in your .env file "
+        "or set OPENAI_API_KEY to the same value."
+    )
+
+llm = ChatOpenAI(
+    model=get_setting("OPENROUTER_MODEL", "meta-llama/llama-3.3-70b-instruct"),
     temperature=0,
-    google_api_key=gemini_api_key,
+    api_key=openrouter_api_key,
+    base_url=get_setting("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
 )
 
 # 1st agent (Search Agent)

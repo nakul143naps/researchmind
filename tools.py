@@ -7,7 +7,13 @@ from dotenv import load_dotenv
 from rich import print
 load_dotenv()
 
-tavily = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
+try:
+    import streamlit as st
+    tavily_api_key = os.getenv("TAVILY_API_KEY") or st.secrets.get("TAVILY_API_KEY")
+except Exception:
+    tavily_api_key = os.getenv("TAVILY_API_KEY")
+
+tavily = TavilyClient(api_key=tavily_api_key)
 
 @tool
 def web_search(query : str) -> str:
